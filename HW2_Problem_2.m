@@ -1,4 +1,4 @@
-%problem 1
+%problem 2
 
 clear();
 
@@ -19,7 +19,7 @@ textOutputs = C{1, 1};
 % now we need to encode the outputs
 outputs = zeros(size(textOutputs, 1), 10);
 for k = 1:size(textOutputs,1)
-   if(strcmp(textOutputs{k}, 'CTY') == 1)
+   if(strcmp(textOutputs{k}, 'CYT') == 1)
        outputs(k, 1) = 1;
    elseif(strcmp(textOutputs{k}, 'NUC') == 1)
        outputs(k, 2) = 1;
@@ -48,12 +48,13 @@ end
 % setting up the neural network
 network = nnsetup([8 3 10]);
 network.activation_function = 'perceptron';
-network.learningRate = 1; %this was suggested by the toolbox creator
-opts.numepochs = 1; %we'll do one runthrough for the whole data set
+network.learningRate = .05; %this was suggested by the toolbox creator
+opts.numepochs = 1000; %we'll do one runthrough for the whole data set
 opts.batchsize = 1; %were inputing one sample at a time
 opts.plot = 0;
 network.testing = 0;
-network.plotting = 0;
+network.plotting = 1;
+network.plotting2 = 0;
 
 [network, ~] = nntrain(network, data, outputs, opts); %train on the whole sample
 

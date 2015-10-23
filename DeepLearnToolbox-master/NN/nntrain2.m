@@ -1,4 +1,4 @@
-function [nn, totalError]  = nntrain(nn, train_x, train_y, opts, val_x, val_y)
+function [nn, totalError]  = nntrain2(nn, train_x, train_y, opts, val_x, val_y)
 %NNTRAIN trains a neural net
 % [nn, L] = nnff(nn, x, y, opts) trains the neural network nn with input x and
 % output y for opts.numepochs epochs, with minibatches of size
@@ -35,7 +35,6 @@ sampleErrors = zeros(numbatches, 10);
 numError = zeros(1, 10);
 trainingError = zeros(numbatches, 1);
 errorCount = 0;
-epochErrors = zeros(numepochs, 1);
 a12 = zeros(numbatches, 9); % weights for node 1 layer 2
 a22 = zeros(numbatches, 9);
 a32 = zeros(numbatches, 9);
@@ -58,11 +57,6 @@ L = zeros(numepochs*numbatches,1);
 n = 1;
 for i = 1 : numepochs
     tic;
-    
-    sampleErrors = zeros(numbatches, 10);
-    numError = zeros(1, 10);
-    trainingError = zeros(numbatches, 1);
-    errorCount = 0;
     
     kk = randperm(m);
     for l = 1 : numbatches
@@ -93,16 +87,16 @@ for i = 1 : numepochs
             a12(l,:) = nn.W{1}(1,:); % weights for node 1 layer 2
             a22(l,:) = nn.W{1}(2,:);
             a32(l,:) = nn.W{1}(3,:);
-            a13(l,:) = nn.W{2}(1,:);
-            a23(l,:) = nn.W{2}(2,:);
-            a33(l,:) = nn.W{2}(3,:);
-            a43(l,:) = nn.W{2}(4,:);
-            a53(l,:) = nn.W{2}(5,:);
-            a63(l,:) = nn.W{2}(6,:);
-            a73(l,:) = nn.W{2}(7,:);
-            a83(l,:) = nn.W{2}(8,:);
-            a93(l,:) = nn.W{2}(9,:);
-            a103(l,:) = nn.W{2}(10,:);
+%             a13(l,:) = nn.W{2}(1,:);
+%             a23(l,:) = nn.W{2}(2,:);
+%             a33(l,:) = nn.W{2}(3,:);
+%             a43(l,:) = nn.W{2}(4,:);
+%             a53(l,:) = nn.W{2}(5,:);
+%             a63(l,:) = nn.W{2}(6,:);
+%             a73(l,:) = nn.W{2}(7,:);
+%             a83(l,:) = nn.W{2}(8,:);
+%             a93(l,:) = nn.W{2}(9,:);
+%             a103(l,:) = nn.W{2}(10,:);
         end
         
         L(n) = nn.L;
@@ -122,20 +116,17 @@ for i = 1 : numepochs
     if ishandle(fhandle)
         nnupdatefigures(nn, fhandle, loss, opts, i);
     end
-    
-%     disp(trainingError(numbatches));
-
-    totalError = trainingError(numbatches);
-    epochErrors(i) = totalError;
+        
     %disp(['epoch ' num2str(i) '/' num2str(opts.numepochs) '. Took ' num2str(t) ' seconds' '. Mini-batch mean squared error on training set is ' num2str(mean(L((n-numbatches):(n-1)))) str_perf]);
     nn.learningRate = nn.learningRate * nn.scaling_learningRate;
 end
 % trainingError = trainingError/numbatches; %old training error
+% disp(trainingError(numbatches));
 
-
+totalError = trainingError(numbatches);
 
 plot(trainingError);
-title('Error Progression of Total Error for a Dataset Run')
+title('Error Progression of Total Error')
 xlabel('Sample Number')
 ylabel('Error Percentage')
 legend('Total Error');
@@ -143,13 +134,6 @@ axis([0 inf 0 1]);
 
 outputs= outputs';
 if(nn.plotting ==1)
-    plot(epochErrors);
-    title('Error Progression of Error at every epoch')
-    xlabel('Sample Number')
-    ylabel('Error Percentage')
-    legend('Total Error');
-    axis([0 inf 0 1]);
-    
     figure
     for i = 1:5
         plot(outputs(i,:));
@@ -233,115 +217,115 @@ if(nn.plotting2 ==1)
     legend('W0', 'W1', 'W2', 'W3', 'W4', 'W5','W6', 'W7', 'W8');
     hold off
     
-    figure
-    for i = 1:4
-        plot(a13(:,i))
-        hold on
-    end
-    title('Weight Change Progression for Node 1 of layer3 (output Layer)')
-    xlabel('Sample Number')
-    ylabel('Weight Value')
-    legend('W0', 'W1', 'W2', 'W3');
-    hold off
-    
-    figure
-    for i = 1:4
-        plot(a23(:,i))
-        hold on
-    end
-    title('Weight Change Progression for Node 2 of layer3 (output Layer)')
-    xlabel('Sample Number')
-    ylabel('Weight Value')
-    legend('W0', 'W1', 'W2', 'W3');
-    hold off
-    
-    figure
-    for i = 1:4
-        plot(a33(:,i))
-        hold on
-    end
-    title('Weight Change Progression for Node 3 of layer3 (output Layer)')
-    xlabel('Sample Number')
-    ylabel('Weight Value')
-    legend('W0', 'W1', 'W2', 'W3');
-    hold off
-    
-    figure
-    for i = 1:4
-        plot(a43(:,i))
-        hold on
-    end
-    title('Weight Change Progression for Node 4 of layer3 (output Layer)')
-    xlabel('Sample Number')
-    ylabel('Weight Value')
-    legend('W0', 'W1', 'W2', 'W3');
-    hold off
-    
-    figure
-    for i = 1:4
-        plot(a53(:,i))
-        hold on
-    end
-    title('Weight Change Progression for Node 5 of layer3 (output Layer)')
-    xlabel('Sample Number')
-    ylabel('Weight Value')
-    legend('W0', 'W1', 'W2', 'W3');
-    hold off
-    
-    figure
-    for i = 1:4
-        plot(a63(:,i))
-        hold on
-    end
-    title('Weight Change Progression for Node 6 of layer3 (output Layer)')
-    xlabel('Sample Number')
-    ylabel('Weight Value')
-    legend('W0', 'W1', 'W2', 'W3');
-    hold off
-    
-    figure
-    for i = 1:4
-        plot(a73(:,i))
-        hold on
-    end
-    title('Weight Change Progression for Node 7 of layer3 (output Layer)')
-    xlabel('Sample Number')
-    ylabel('Weight Value')
-    legend('W0', 'W1', 'W2', 'W3');
-    hold off
-    
-    figure
-    for i = 1:4
-        plot(a83(:,i))
-        hold on
-    end
-    title('Weight Change Progression for Node 8 of layer3 (output Layer)')
-    xlabel('Sample Number')
-    ylabel('Weight Value')
-    legend('W0', 'W1', 'W2', 'W3');
-    hold off
-    
-    figure
-    for i = 1:4
-        plot(a93(:,i))
-        hold on
-    end
-    title('Weight Change Progression for Node 9 of layer3 (output Layer)')
-    xlabel('Sample Number')
-    ylabel('Weight Value')
-    legend('W0', 'W1', 'W2', 'W3');
-    hold off
-    
-    figure
-    for i = 1:4
-        plot(a103(:,i))
-        hold on
-    end
-    title('Weight Change Progression for Node 10 of layer3 (output Layer)')
-    xlabel('Sample Number')
-    ylabel('Weight Value')
-    legend('W0', 'W1', 'W2', 'W3');
-    hold off
+%     figure
+%     for i = 1:4
+%         plot(a13(:,i))
+%         hold on
+%     end
+%     title('Weight Change Progression for Node 1 of layer3 (output Layer)')
+%     xlabel('Sample Number')
+%     ylabel('Weight Value')
+%     legend('W0', 'W1', 'W2', 'W3');
+%     hold off
+%     
+%     figure
+%     for i = 1:4
+%         plot(a23(:,i))
+%         hold on
+%     end
+%     title('Weight Change Progression for Node 2 of layer3 (output Layer)')
+%     xlabel('Sample Number')
+%     ylabel('Weight Value')
+%     legend('W0', 'W1', 'W2', 'W3');
+%     hold off
+%     
+%     figure
+%     for i = 1:4
+%         plot(a33(:,i))
+%         hold on
+%     end
+%     title('Weight Change Progression for Node 3 of layer3 (output Layer)')
+%     xlabel('Sample Number')
+%     ylabel('Weight Value')
+%     legend('W0', 'W1', 'W2', 'W3');
+%     hold off
+%     
+%     figure
+%     for i = 1:4
+%         plot(a43(:,i))
+%         hold on
+%     end
+%     title('Weight Change Progression for Node 4 of layer3 (output Layer)')
+%     xlabel('Sample Number')
+%     ylabel('Weight Value')
+%     legend('W0', 'W1', 'W2', 'W3');
+%     hold off
+%     
+%     figure
+%     for i = 1:4
+%         plot(a53(:,i))
+%         hold on
+%     end
+%     title('Weight Change Progression for Node 5 of layer3 (output Layer)')
+%     xlabel('Sample Number')
+%     ylabel('Weight Value')
+%     legend('W0', 'W1', 'W2', 'W3');
+%     hold off
+%     
+%     figure
+%     for i = 1:4
+%         plot(a63(:,i))
+%         hold on
+%     end
+%     title('Weight Change Progression for Node 6 of layer3 (output Layer)')
+%     xlabel('Sample Number')
+%     ylabel('Weight Value')
+%     legend('W0', 'W1', 'W2', 'W3');
+%     hold off
+%     
+%     figure
+%     for i = 1:4
+%         plot(a73(:,i))
+%         hold on
+%     end
+%     title('Weight Change Progression for Node 7 of layer3 (output Layer)')
+%     xlabel('Sample Number')
+%     ylabel('Weight Value')
+%     legend('W0', 'W1', 'W2', 'W3');
+%     hold off
+%     
+%     figure
+%     for i = 1:4
+%         plot(a83(:,i))
+%         hold on
+%     end
+%     title('Weight Change Progression for Node 8 of layer3 (output Layer)')
+%     xlabel('Sample Number')
+%     ylabel('Weight Value')
+%     legend('W0', 'W1', 'W2', 'W3');
+%     hold off
+%     
+%     figure
+%     for i = 1:4
+%         plot(a93(:,i))
+%         hold on
+%     end
+%     title('Weight Change Progression for Node 9 of layer3 (output Layer)')
+%     xlabel('Sample Number')
+%     ylabel('Weight Value')
+%     legend('W0', 'W1', 'W2', 'W3');
+%     hold off
+%     
+%     figure
+%     for i = 1:4
+%         plot(a103(:,i))
+%         hold on
+%     end
+%     title('Weight Change Progression for Node 10 of layer3 (output Layer)')
+%     xlabel('Sample Number')
+%     ylabel('Weight Value')
+%     legend('W0', 'W1', 'W2', 'W3');
+%     hold off
 end
 
 end

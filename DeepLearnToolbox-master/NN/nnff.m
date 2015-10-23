@@ -8,6 +8,7 @@ function [nn, incorrect, output, trainingError] = nnff(nn, x, y)
     
     x = [ones(m,1) x];
     nn.a{1} = x;
+    nn.A{1} = nn.a{1}; %the actual activation function
 %      display(x); % debugger
 
     %feedforward pass
@@ -21,9 +22,8 @@ function [nn, incorrect, output, trainingError] = nnff(nn, x, y)
             case 'perceptron' %this is the part I added
 %                 display(size(nn.a{i-1}));  %debugger
 %                 display(size(nn.W{i - 1})); %debugger
-                nn.a{i} = nn.a{i - 1} * nn.W{i - 1}'; %W^tx
-                nn.a{i}(nn.a{i} >= 0)= 1;
-                nn.a{i}(nn.a{i} <0)= 0;
+                nn.a{i} = sigm(nn.a{i - 1} * nn.W{i - 1}'); %W^tx
+               
 
 %                 display(size(nn.a{i})); %debugger
 
@@ -48,6 +48,10 @@ function [nn, incorrect, output, trainingError] = nnff(nn, x, y)
         
         %Add the bias term
         nn.a{i} = [ones(m,1) nn.a{i}];
+            
+%         nn.A{i} = nn.a{i};                          %putting in the step function
+%         nn.A{i}(nn.A{i} >= .5)= 1;
+%         nn.A{i}(nn.A{i} <.5)= 0;
      end
 %   display(size(nn.a{2}));  %debugger
     switch nn.output 
@@ -64,17 +68,23 @@ function [nn, incorrect, output, trainingError] = nnff(nn, x, y)
     end
 
     %error and loss
-    trainingError = 0;                  %the total error for training
+    trainingError = 1;                  %the total error for training
     nn.e = y - nn.a{n};
     incorrect = zeros(1,10);            %this is for errors for each clasification
     for i = 1:10
-        if(abs(nn.e(i)) >=.30)
-            incorrect(i) = 1;
-            if(y(i) == 1)
-               trainingError = 1; 
+        if(y(i) == 1)                       %this is our sample
+            if(max(nn.a{n}) == nn.a{n}(i))  %and we guess right
+                trainingError = 0;          %there's no error
+            end
+        
+        else                                %otherwise if this isn't our sample
+            if(max(nn.a{n}) == nn.a{n}(i))  %and we still guessed this
+                    incorrect(i)= 1;        %then we errored for that sample
             end
         end
+        
     end
+     
    
     output = nn.a{n}(:);
     % display(size(nn.a{n})) %debugger;
