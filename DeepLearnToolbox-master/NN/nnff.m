@@ -9,7 +9,7 @@ function [nn, incorrect, output, trainingError] = nnff(nn, x, y)
     x = [ones(m,1) x];
     nn.a{1} = x;
     nn.A{1} = nn.a{1}; %the actual activation function
-%      display(x); % debugger
+
 
     %feedforward pass
     for i = 2 : n-1
@@ -17,17 +17,14 @@ function [nn, incorrect, output, trainingError] = nnff(nn, x, y)
             case 'sigm'
                 % Calculate the unit's outputs (including the bias term)
                 nn.a{i} = sigm(nn.a{i - 1} * nn.W{i - 1}');
+
             case 'tanh_opt'
                 nn.a{i} = tanh_opt(nn.a{i - 1} * nn.W{i - 1}');
             case 'perceptron' %this is the part I added
-%                 display(size(nn.a{i-1}));  %debugger
-%                 display(size(nn.W{i - 1})); %debugger
                 nn.a{i} = sigm(nn.a{i - 1} * nn.W{i - 1}'); %W^tx
-               
-
-%                 display(size(nn.a{i})); %debugger
-
-%                  display(nn.a{i}); %debugger
+                % I really should of just used the sigmoid
+                % but I misunderstood the problem at the begining and I
+                % don't want to go back and change things (might get bugs)
         end
         
         %dropout
@@ -49,15 +46,11 @@ function [nn, incorrect, output, trainingError] = nnff(nn, x, y)
         %Add the bias term
         nn.a{i} = [ones(m,1) nn.a{i}];
             
-%         nn.A{i} = nn.a{i};                          %putting in the step function
-%         nn.A{i}(nn.A{i} >= .5)= 1;
-%         nn.A{i}(nn.A{i} <.5)= 0;
      end
-%   display(size(nn.a{2}));  %debugger
+
     switch nn.output 
         case 'sigm'
-%             display(size(nn.a{n-1}));  %debugger
-%             display(size(nn.W{n - 1})); %debugger
+
             nn.a{n} = sigm(nn.a{n - 1} * nn.W{n - 1}');
         case 'linear'
             nn.a{n} = nn.a{n - 1} * nn.W{n - 1}';
@@ -87,7 +80,7 @@ function [nn, incorrect, output, trainingError] = nnff(nn, x, y)
      
    
     output = nn.a{n}(:);
-    % display(size(nn.a{n})) %debugger;
+
     switch nn.output
         case {'sigm', 'linear'}
             nn.L = 1/2 * sum(sum(nn.e .^ 2)) / m; 

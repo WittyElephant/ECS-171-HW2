@@ -1,4 +1,4 @@
-%problem 2
+%problem 5
 
 clear();
 
@@ -46,19 +46,16 @@ end
 
 
 % setting up the neural network
-network = nnsetup([8 3 10]);
+network = nnsetup2([8 3 10]);
 network.activation_function = 'perceptron';
 network.learningRate = .05; 
-opts.numepochs = 1000; %we'll do 1000 runthroughs
+opts.numepochs = 1; %we'll do one runthrough for the whole data set
 opts.batchsize = 1; %were inputing one sample at a time
 opts.plot = 0;
 network.testing = 0;
-network.plotting = 1;
+network.plotting = 0;
 network.plotting2 = 0;
 
-[network, error] = nntrain(network, data, outputs, opts); %train on the whole sample
-% note that there was no need for randomization because he randomizes the
-% samples in the nntrain
-display(error);
+ [network, ~] = nntrain(network, data(1,:), outputs(1,:), opts); %train on the whole sample
 
 

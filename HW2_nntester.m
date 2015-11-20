@@ -1,4 +1,4 @@
-%problem 1
+% this was to make sure my neural network was training correctly
 
 clear();
 

@@ -3,8 +3,14 @@ function [nn, totalError]  = nntrain2(nn, train_x, train_y, opts, val_x, val_y)
 % [nn, L] = nnff(nn, x, y, opts) trains the neural network nn with input x and
 % output y for opts.numepochs epochs, with minibatches of size
 % opts.batchsize. Returns a neural network nn with updated activations,
-% errors, weights and biases, (nn.a, nn.e, nn.W, nn.b) and L, the sum
-% squared error for each training minibatch.
+% errors, weights and biases, (nn.a, nn.e, nn.W, nn.b) and L
+
+%this was specifically fro problem 4 as graphing the weights was a problem
+%for neural networks of different sizes
+
+
+
+
 
 assert(isfloat(train_x), 'train_x must be a float');
 assert(nargin == 4 || nargin == 6,'number ofinput arguments must be 4 or 6')
@@ -35,6 +41,7 @@ sampleErrors = zeros(numbatches, 10);
 numError = zeros(1, 10);
 trainingError = zeros(numbatches, 1);
 errorCount = 0;
+epochErrors = zeros(numepochs, 1);
 a12 = zeros(numbatches, 9); % weights for node 1 layer 2
 a22 = zeros(numbatches, 9);
 a32 = zeros(numbatches, 9);
@@ -58,6 +65,11 @@ n = 1;
 for i = 1 : numepochs
     tic;
     
+    sampleErrors = zeros(numbatches, 10);
+    numError = zeros(1, 10);
+    trainingError = zeros(numbatches, 1);
+    errorCount = 0;
+    
     kk = randperm(m);
     for l = 1 : numbatches
         batch_x = train_x(kk((l - 1) * batchsize + 1 : l * batchsize), :);
@@ -68,8 +80,7 @@ for i = 1 : numepochs
         end
         
         batch_y = train_y(kk((l - 1) * batchsize + 1 : l * batchsize), :);
-%         display(l) % debugger
-%         display(batch_y); % debugger
+
         
         [nn, incorrect, output, sampleCorrect] = nnff(nn, batch_x, batch_y);
 
@@ -116,24 +127,37 @@ for i = 1 : numepochs
     if ishandle(fhandle)
         nnupdatefigures(nn, fhandle, loss, opts, i);
     end
-        
-    %disp(['epoch ' num2str(i) '/' num2str(opts.numepochs) '. Took ' num2str(t) ' seconds' '. Mini-batch mean squared error on training set is ' num2str(mean(L((n-numbatches):(n-1)))) str_perf]);
+    
+
+    totalError = trainingError(numbatches);
+    epochErrors(i) = totalError;
     nn.learningRate = nn.learningRate * nn.scaling_learningRate;
 end
-% trainingError = trainingError/numbatches; %old training error
-% disp(trainingError(numbatches));
 
-totalError = trainingError(numbatches);
-
-plot(trainingError);
-title('Error Progression of Total Error')
-xlabel('Sample Number')
-ylabel('Error Percentage')
-legend('Total Error');
-axis([0 inf 0 1]);
 
 outputs= outputs';
 if(nn.plotting ==1)
+
+    figure
+    plot(epochErrors);
+    title('Error Progression of Error for Every Epoch')
+    xlabel('Sample Number')
+    ylabel('Error Percentage')
+    legend('Total Error');
+    axis([0 inf 0 1]);
+    
+    
+end
+
+if(nn.plotting2 ==1)
+        figure
+    plot(trainingError);
+    title('Error Progression of Total Error for Dataset Run')
+    xlabel('Sample Number')
+    ylabel('Error Percentage')
+    legend('Total Error');
+    axis([0 inf 0 1]);
+    
     figure
     for i = 1:5
         plot(outputs(i,:));
@@ -181,9 +205,7 @@ if(nn.plotting ==1)
     legend('ME2', 'ME1', 'EXC', 'POX', 'ERL');
     axis([0 inf 0 1]);
     hold off
-end
 
-if(nn.plotting2 ==1)
     figure
     for i = 1:9
         plot(a12(:,i))

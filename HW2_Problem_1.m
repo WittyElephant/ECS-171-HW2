@@ -1,5 +1,22 @@
 %problem 1
 
+%credit for all of the m files in the Deep Learning ToolBox Master as well
+%as the HW2_nntester go to rasmus berg palm on git hub, the code can be found
+%at https://github.com/rasmusbergpalm/DeepLearnToolbox
+
+%although I modified his code for graphing purposes as well as a few other
+%modifications, ultamately most of it was him
+
+%I would also like to thank the TA ameen for pointing me to the toolbox
+
+%also a requested by rasmus berg palm, I am to cite his thesis as well
+%Palm, Rasmus Berg. Prediction as a Candidate for Learning Deep 
+%Hierarchical Models of Data. Thesis. Technical University of Denmark,
+%2012. Lyngby: Technical U of Denmark, DTU Informatics, 2012. Print.
+
+%this citation is meant to be on all of my m files, but I'm only puttting
+%it here for clairity reasons
+
 clear();
 
 addpath(genpath('DeepLearnToolbox-master'));
@@ -51,13 +68,13 @@ trainInput = data(trainSplit,:);
 trainOuput = outputs(trainSplit,:);
 testInput = data(testSplit,:);
 testOuput = outputs(testSplit,:);
-%debugger
+
 
 % setting up the neural network
 network = nnsetup([8 3 10]);
 network.activation_function = 'perceptron';
-network.learningRate = .05; %this was suggested by the toolbox creator
-opts.numepochs = 1000; %we'll do one runthrough for the whole data set
+network.learningRate = .05; 
+opts.numepochs = 1000; %we'll do 1000 runthroughs
 opts.batchsize = 1; %were inputing one sample at a time
 opts.plot = 0;
 network.testing = 0;

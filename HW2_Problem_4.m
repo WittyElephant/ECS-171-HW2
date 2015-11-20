@@ -55,71 +55,76 @@ testOuput = outputs(testSplit,:);
 totalErrors = zeros(3,4); %to store all the total errors
 
 for i = 1:4  %itterating throught the networks fo one hidden layer
-    errors = zeros(100,1); %stores the errors at each itteration
-    for j = 1:100
+    errors = zeros(5,1); %stores the errors at each itteration
+    for j = 1:5
         % setting up the neural network
         network1 = nnsetup([8 3*i 10]);
         network1.activation_function = 'perceptron';
-        network1.learningRate = .05; %this was suggested by the toolbox creator
-        opts.numepochs = 1; %we'll do one runthrough for the whole data set
+        network1.learningRate = .05; 
+        opts.numepochs = 200; %we'll do 1000 runthroughs
         opts.batchsize = 1; %were inputing one sample at a time
         opts.plot = 0;
         network1.testing = 0;
-        network1.plotting = 0;
+        network1.plotting = 1;
         network1.plotting2 = 0;
         
         [network1, ~] = nntrain2(network1, trainInput, trainOuput, opts);
         network1.testing = 1;
         network1.plotting = 0;
+        opts.numepochs = 1;
         [network1, totalError] = nntrain2(network1, testInput, testOuput, opts);
         errors(j) = totalError;
     end
     totalErrors(1,i) = mean(errors); %store the errors
 end
-
+disp(totalErrors);
 for i = 1:4  %itterating throught the networks for two hidden layer
-    errors = zeros(100,1); %stores the errors at each itteration
-    for j = 1:100
+    errors = zeros(5,1); %stores the errors at each itteration
+    for j = 1:5
         % setting up the neural network
-        network1 = nnsetup2([8 3*i 3*i 10]);
+        network1 = nnsetup([8 3*i 3*i 10]);
         network1.activation_function = 'perceptron';
-        network1.learningRate = .05; %this was suggested by the toolbox creator
-        opts.numepochs = 1; %we'll do one runthrough for the whole data set
+        network1.learningRate = .05; 
+        opts.numepochs = 200; %we'll do 1000 runthroughs
         opts.batchsize = 1; %were inputing one sample at a time
         opts.plot = 0;
         network1.testing = 0;
-        network1.plotting = 0;
+        network1.plotting = 1;
         network1.plotting2 = 0;
         
         [network1, ~] = nntrain2(network1, trainInput, trainOuput, opts);
         network1.testing = 1;
         network1.plotting = 0;
+        opts.numepochs = 1;
         [network1, totalError] = nntrain2(network1, testInput, testOuput, opts);
         errors(j) = totalError;
     end
     totalErrors(2,i) = mean(errors); %store the errors
 end
 
+disp(totalErrors);
 for i = 1:4  %itterating throught the networks fo one hidden layer
-    errors = zeros(100,1); %stores the errors at each itteration
-    for j = 1:100
+    errors = zeros(5,1); %stores the errors at each itteration
+    for j = 1:5
         % setting up the neural network
-        network1 = nnsetup2([8 3*i 3*i 3*i 10]);
+        network1 = nnsetup([8 3*i 3*i 3*i 10]);
         network1.activation_function = 'perceptron';
-        network1.learningRate = .05; %this was suggested by the toolbox creator
-        opts.numepochs = 1; %we'll do one runthrough for the whole data set
+        network1.learningRate = .05; 
+        opts.numepochs = 200; %we'll do 1000 runthroughs
         opts.batchsize = 1; %were inputing one sample at a time
         opts.plot = 0;
         network1.testing = 0;
-        network1.plotting = 0;
+        network1.plotting = 1;
         network1.plotting2 = 0;
         
         [network1, ~] = nntrain2(network1, trainInput, trainOuput, opts);
         network1.testing = 1;
         network1.plotting = 0;
+        opts.numepochs = 1;
         [network1, totalError] = nntrain2(network1, testInput, testOuput, opts);
         errors(j) = totalError;
     end
     totalErrors(3,i) = mean(errors); %store the errors
 end
 
+disp(totalErrors);

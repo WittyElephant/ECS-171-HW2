@@ -3,6 +3,9 @@ function nn = nnsetup2(architecture)
 % nn = nnsetup(architecture) returns an neural network structure with n=numel(architecture)
 % layers, architecture being a n x 1 vector of layer sizes e.g. [784 100 10]
 
+%this is specifically for problem 3, its basically the same except I
+%changed the start weight to .5 instead of random
+
     nn.size   = architecture;
     nn.n      = numel(nn.size);
     
@@ -20,7 +23,7 @@ function nn = nnsetup2(architecture)
 
     for i = 2 : nn.n   
         % weights and weight momentum
-        nn.W{i - 1} = (zeros(nn.size(i), nn.size(i - 1)+1) + 0.5);
+        nn.W{i - 1} = (zeros(nn.size(i), nn.size(i - 1)+1) + 0.5); 
         nn.vW{i - 1} = zeros(size(nn.W{i - 1}));
         
         % average activations (for use with sparsity)

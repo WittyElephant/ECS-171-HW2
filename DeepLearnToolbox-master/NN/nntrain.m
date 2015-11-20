@@ -74,8 +74,7 @@ for i = 1 : numepochs
         end
         
         batch_y = train_y(kk((l - 1) * batchsize + 1 : l * batchsize), :);
-%         display(l) % debugger
-%         display(batch_y); % debugger
+
         
         [nn, incorrect, output, sampleCorrect] = nnff(nn, batch_x, batch_y);
 
@@ -123,28 +122,26 @@ for i = 1 : numepochs
         nnupdatefigures(nn, fhandle, loss, opts, i);
     end
     
-%     disp(trainingError(numbatches));
 
     totalError = trainingError(numbatches);
     epochErrors(i) = totalError;
-    %disp(['epoch ' num2str(i) '/' num2str(opts.numepochs) '. Took ' num2str(t) ' seconds' '. Mini-batch mean squared error on training set is ' num2str(mean(L((n-numbatches):(n-1)))) str_perf]);
     nn.learningRate = nn.learningRate * nn.scaling_learningRate;
 end
-% trainingError = trainingError/numbatches; %old training error
 
-
-
-plot(trainingError);
-title('Error Progression of Total Error for a Dataset Run')
-xlabel('Sample Number')
-ylabel('Error Percentage')
-legend('Total Error');
-axis([0 inf 0 1]);
 
 outputs= outputs';
 if(nn.plotting ==1)
+    figure
+    plot(trainingError);
+    title('Error Progression of Total Error for Dataset Run')
+    xlabel('Sample Number')
+    ylabel('Error Percentage')
+    legend('Total Error');
+    axis([0 inf 0 1]);
+
+    figure
     plot(epochErrors);
-    title('Error Progression of Error at every epoch')
+    title('Error Progression of Error for Every Epoch')
     xlabel('Sample Number')
     ylabel('Error Percentage')
     legend('Total Error');
